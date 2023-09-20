@@ -1,23 +1,27 @@
-package main
+package internal
 
 import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/deividroger/client-server-api-go/dto"
+	"github.com/deividroger/client-server-api-go/internal/common"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func main() {
+func ServerInit() {
 	CreateDatabaseStructure()
+
 	handler := func(w http.ResponseWriter, r *http.Request) {
 
-		cotation, err := GetCotation()
+		ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+		defer cancel()
+
+		cotation, err := common.GetCotation[dto.Cotation](ctx, "https://economia.awesomeapi.com.br/json/last/USD-BRL")
 
 		if err != nil {
 			log.Print(err)
@@ -48,40 +52,40 @@ func main() {
 
 }
 
-func GetCotation() (*dto.Cotation, error) {
+// func getCotation() (*dto.Cotation, error) {
 
-	ctx, _cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
-	defer _cancel()
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://economia.awesomeapi.com.br/json/last/USD-BRL", nil)
+// 	ctx, _cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+// 	defer _cancel()
+// 	req, err := http.NewRequestWithContext(ctx, "GET", "https://economia.awesomeapi.com.br/json/last/USD-BRL", nil)
 
-	if err != nil {
-		return nil, err
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	res, err := http.DefaultClient.Do(req)
+// 	res, err := http.DefaultClient.Do(req)
 
-	if err != nil {
-		return nil, err
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	defer res.Body.Close()
+// 	defer res.Body.Close()
 
-	body, err := io.ReadAll(res.Body)
+// 	body, err := io.ReadAll(res.Body)
 
-	if err != nil {
-		return nil, err
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	var c dto.Cotation
+// 	var c dto.Cotation
 
-	err = json.Unmarshal(body, &c)
+// 	err = json.Unmarshal(body, &c)
 
-	if err != nil {
-		return nil, err
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return &c, err
-}
+// 	return &c, err
+// }
 
 func StorageCotation(cotation *dto.Cotation) error {
 	ctx, _cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
