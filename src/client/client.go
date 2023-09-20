@@ -1,6 +1,7 @@
 package main
 
 import (
+	"client-server-api-go/dto"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -9,22 +10,6 @@ import (
 	"os"
 	"time"
 )
-
-type Cotation struct {
-	Usdbrl struct {
-		Code       string `json:"code"`
-		Codein     string `json:"codein"`
-		Name       string `json:"name"`
-		High       string `json:"high"`
-		Low        string `json:"low"`
-		VarBid     string `json:"varBid"`
-		PctChange  string `json:"pctChange"`
-		Bid        string `json:"bid"`
-		Ask        string `json:"ask"`
-		Timestamp  string `json:"timestamp"`
-		CreateDate string `json:"create_date"`
-	} `json:"USDBRL"`
-}
 
 func main() {
 
@@ -47,7 +32,7 @@ func main() {
 
 }
 
-func GetCotation() (*Cotation, error) {
+func GetCotation() (*dto.Cotation, error) {
 	ctx, _cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
 	defer _cancel()
 
@@ -65,7 +50,7 @@ func GetCotation() (*Cotation, error) {
 
 	defer res.Body.Close()
 
-	var cotation Cotation
+	var cotation dto.Cotation
 	err = json.NewDecoder(res.Body).Decode(&cotation)
 
 	if err != nil {

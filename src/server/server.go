@@ -1,6 +1,7 @@
 package main
 
 import (
+	"client-server-api-go/dto"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -11,22 +12,6 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 )
-
-type Cotation struct {
-	Usdbrl struct {
-		Code       string `json:"code"`
-		Codein     string `json:"codein"`
-		Name       string `json:"name"`
-		High       string `json:"high"`
-		Low        string `json:"low"`
-		VarBid     string `json:"varBid"`
-		PctChange  string `json:"pctChange"`
-		Bid        string `json:"bid"`
-		Ask        string `json:"ask"`
-		Timestamp  string `json:"timestamp"`
-		CreateDate string `json:"create_date"`
-	} `json:"USDBRL"`
-}
 
 func main() {
 	CreateDatabaseStructure()
@@ -63,7 +48,7 @@ func main() {
 
 }
 
-func GetCotation() (*Cotation, error) {
+func GetCotation() (*dto.Cotation, error) {
 
 	ctx, _cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
 	defer _cancel()
@@ -87,7 +72,7 @@ func GetCotation() (*Cotation, error) {
 		return nil, err
 	}
 
-	var c Cotation
+	var c dto.Cotation
 
 	err = json.Unmarshal(body, &c)
 
@@ -98,7 +83,7 @@ func GetCotation() (*Cotation, error) {
 	return &c, err
 }
 
-func StorageCotation(cotation *Cotation) error {
+func StorageCotation(cotation *dto.Cotation) error {
 	ctx, _cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
 	defer _cancel()
 
