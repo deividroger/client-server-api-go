@@ -1,7 +1,6 @@
 package main
 
 import (
-	"client-server-api-go/dto"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -9,6 +8,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/deividroger/client-server-api-go/dto"
 )
 
 func main() {

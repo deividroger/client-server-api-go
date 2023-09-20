@@ -1,4 +1,4 @@
-module client-server-api-go
+module github.com/deividroger/client-server-api-go
 
 go 1.19
 

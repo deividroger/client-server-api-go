@@ -1,7 +1,6 @@
 package main
 
 import (
-	"client-server-api-go/dto"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -10,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/deividroger/client-server-api-go/dto"
 	_ "github.com/mattn/go-sqlite3"
 )
 
